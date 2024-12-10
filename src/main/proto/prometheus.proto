@@ -14,7 +14,7 @@
 syntax = "proto3";
 package prometheus;
 
-option java_package = "com.uber.m3.promremoteclient";
+option java_package = "com.aquatic.amp.exporter";
 
 message WriteRequest {
   repeated prometheus.TimeSeries timeseries = 1;

@@ -1,53 +1,46 @@
-// Copyright (c) 2019 Uber Technologies, Inc.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the 'Software'), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+import org.gradle.api.tasks.testing.logging.TestLogEvent
 
-group = 'com.uber.m3'
-version = '0.1.0'
-description = 'Prometheus Remote Write Client'
+plugins {
+    id 'java'
+    id 'com.google.protobuf' version '0.9.4'
+}
 
-apply plugin: 'java'
-apply plugin: 'com.google.protobuf'
+group = 'com.aquatic'
+version = '1.0.0'
+description = 'Remote Write Client for Amazon Managed Prometheus'
 
 repositories {
     mavenCentral()
 }
 
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.8'
-    }
+dependencies {
+    implementation 'com.google.protobuf:protobuf-java:3.25.5'
+    implementation 'org.xerial.snappy:snappy-java:1.1.10.7'
+
+    implementation 'software.amazon.awssdk:auth:2.20.84'
+    implementation 'software.amazon.awssdk:sts:2.20.84'
+
+    testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("org.hamcrest:hamcrest:2.2")
 }
 
-dependencies {
-    compile 'com.google.protobuf:protobuf-java:3.8.0'
-    compile 'org.xerial.snappy:snappy-java:1.1.7.3'
-    compile 'com.squareup.okhttp3:okhttp:3.14.2'
-    testCompile 'junit:junit:4.12'
+
+test {
+    reports.html.getRequired().set(false)
+    reports.junitXml.getRequired().set(false)
+    useJUnitPlatform()
+
+    testLogging {
+        exceptionFormat = 'full'
+        events TestLogEvent.FAILED,
+                TestLogEvent.SKIPPED,
+                TestLogEvent.STANDARD_OUT
+    }
 }
 
 protobuf {
-    generatedFilesBaseDir = "$projectDir/src"
     protoc {
-        artifact = 'com.google.protobuf:protoc:3.0.0'
+        artifact = 'com.google.protobuf:protoc:3.24.3'
     }
 }
