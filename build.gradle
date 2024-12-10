@@ -3,6 +3,7 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 plugins {
     id 'java'
     id 'com.google.protobuf' version '0.9.4'
+    id 'com.diffplug.spotless' version "6.22.0"
 }
 
 group = 'com.aquatic'
@@ -11,6 +12,13 @@ description = 'Remote Write Client for Amazon Managed Prometheus'
 
 repositories {
     mavenCentral()
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+    withSourcesJar()
 }
 
 dependencies {
@@ -36,6 +44,19 @@ test {
         events TestLogEvent.FAILED,
                 TestLogEvent.SKIPPED,
                 TestLogEvent.STANDARD_OUT
+    }
+}
+
+spotless {
+    java {
+        palantirJavaFormat("2.35.0")
+        importOrder(
+                'com.aquatic',
+                '',
+                'java',
+                '\\#'
+        )
+        removeUnusedImports()
     }
 }
 

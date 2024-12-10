@@ -19,17 +19,29 @@ public class WriteReadExample {
             long now = System.currentTimeMillis();
             long value = now % 100;
             System.out.println("Writing sample: " + i + "=" + value + " at timestamp " + now);
-            Prometheus.Sample sample = Prometheus.Sample.newBuilder().setTimestamp(now).setValue(value).build();
-            Prometheus.Label label = Prometheus.Label.newBuilder().setName("__name__").setValue(sampleName).build();
-            Prometheus.TimeSeries timeSeries = Prometheus.TimeSeries.newBuilder().addLabels(label).addSamples(sample).build();
-            var response = client.writeSamples(Prometheus.WriteRequest.newBuilder().addTimeseries(timeSeries).build());
+            Prometheus.Sample sample = Prometheus.Sample.newBuilder()
+                    .setTimestamp(now)
+                    .setValue(value)
+                    .build();
+            Prometheus.Label label = Prometheus.Label.newBuilder()
+                    .setName("__name__")
+                    .setValue(sampleName)
+                    .build();
+            Prometheus.TimeSeries timeSeries = Prometheus.TimeSeries.newBuilder()
+                    .addLabels(label)
+                    .addSamples(sample)
+                    .build();
+            var response = client.writeSamples(Prometheus.WriteRequest.newBuilder()
+                    .addTimeseries(timeSeries)
+                    .build());
             if (response.statusCode() != 200) {
                 throw new RuntimeException("Failed to write sample: " + i + "=" + response.body());
             }
             Thread.sleep(5000);
         }
         var end = Instant.now().toString();
-        var results = client.httpRequest("/api/v1/query_range", Map.of("query", sampleName, "start", start, "end", end, "step", "15s"));
+        var results = client.httpRequest(
+                "/api/v1/query_range", Map.of("query", sampleName, "start", start, "end", end, "step", "15s"));
         if (results.statusCode() == 200) {
             System.out.println(results.body());
         } else {

@@ -51,7 +51,11 @@ public class AMPClient {
         this(region, workspaceId, credentialsProvider, HttpClient.newHttpClient()::send);
     }
 
-    AMPClient(Region region, String workspaceId, AwsCredentialsProvider credentialsProvider, SimpleHttpClient<String> client) {
+    AMPClient(
+            Region region,
+            String workspaceId,
+            AwsCredentialsProvider credentialsProvider,
+            SimpleHttpClient<String> client) {
         this.client = client;
         workspaceUrl = "https://aps-workspaces.%s.amazonaws.com/workspaces/%s".formatted(region, workspaceId);
         signer = new RequestSigner(credentialsProvider, Clock.system(UTC), Region.US_EAST_1);
@@ -65,7 +69,8 @@ public class AMPClient {
         return client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());
     }
 
-    public HttpResponse<String> httpRequest(String path, Map<String, String> parameters) throws IOException, InterruptedException {
+    public HttpResponse<String> httpRequest(String path, Map<String, String> parameters)
+            throws IOException, InterruptedException {
         URI endpoint = getParameterizedUri(path, parameters);
         HttpRequest.Builder requestBuilder = createRequestBuilder(endpoint, signer.signGetRequest(endpoint));
         return client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());
@@ -73,7 +78,7 @@ public class AMPClient {
 
     private static HttpRequest.Builder createRequestBuilder(URI endpoint, SdkHttpFullRequest signedRequest) {
         HttpRequest.Builder requestBuilder = HttpRequest.newBuilder().uri(endpoint);
-        for(var header : signedRequest.headers().entrySet()) {
+        for (var header : signedRequest.headers().entrySet()) {
             if (!header.getKey().equalsIgnoreCase("Host")) {
                 requestBuilder.header(header.getKey(), header.getValue().getFirst());
             }

@@ -16,7 +16,7 @@ spotless:
 
 .PHONY: test
 test: ## Run CI Checks
-	./gradlew cleanTest --warning-mode all test --continue
+	./gradlew cleanTest --warning-mode all test --continue spotlessCheck
 
 .PHONY: watch
 watch: ## Run tests continuously
@@ -30,3 +30,6 @@ todo: # Print a list of relevant TODOs in the code
 .PHONY: reformat
 reformat: ## Reformat all the code (as per pre-commit)
 	./gradlew spotlessApply
+
+publish: test
+	# ./gradlew publish

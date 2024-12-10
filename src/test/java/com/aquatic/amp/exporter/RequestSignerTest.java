@@ -24,7 +24,8 @@ class RequestSignerTest {
     @BeforeEach
     public void beforeEach() {
         AwsCredentialsProvider credentialsProvider = () -> AwsBasicCredentials.create("akid", "skid");
-        signer = new RequestSigner(credentialsProvider, Clock.fixed(Instant.ofEpochMilli(1234567890123L), UTC), Region.US_EAST_1);
+        signer = new RequestSigner(
+                credentialsProvider, Clock.fixed(Instant.ofEpochMilli(1234567890123L), UTC), Region.US_EAST_1);
     }
 
     @Test

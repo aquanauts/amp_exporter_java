@@ -20,14 +20,12 @@
 
 package com.aquatic.amp.exporter;
 
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.xerial.snappy.Snappy;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.regions.Region;
 
-import javax.net.ssl.SSLSession;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -37,6 +35,7 @@ import java.net.http.HttpResponse;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
+import javax.net.ssl.SSLSession;
 
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -47,16 +46,23 @@ public class AMPClientTest {
     @BeforeEach
     public void beforeEach() {
         SimpleHttpClient<String> httpClient = StubResponse::create;
-        client = new AMPClient(Region.US_EAST_1, "abc123", () -> AwsBasicCredentials.create("akid", "skid"), httpClient);
+        client =
+                new AMPClient(Region.US_EAST_1, "abc123", () -> AwsBasicCredentials.create("akid", "skid"), httpClient);
     }
 
     @Test
     public void canWriteSamples() throws IOException, InterruptedException {
-        var writeRequest = Prometheus.WriteRequest.newBuilder().addTimeseries(Prometheus.TimeSeries.newBuilder().build()).build();
+        var writeRequest = Prometheus.WriteRequest.newBuilder()
+                .addTimeseries(Prometheus.TimeSeries.newBuilder().build())
+                .build();
         HttpResponse<String> response = client.writeSamples(writeRequest);
         HttpRequest request = response.request();
-        assertEquals(URI.create("https://aps-workspaces.us-east-1.amazonaws.com/workspaces/abc123/api/v1/remote_write"), request.uri());
-        assertEquals(Snappy.compress(writeRequest.toByteArray()).length, request.bodyPublisher().orElseThrow().contentLength());
+        assertEquals(
+                URI.create("https://aps-workspaces.us-east-1.amazonaws.com/workspaces/abc123/api/v1/remote_write"),
+                request.uri());
+        assertEquals(
+                Snappy.compress(writeRequest.toByteArray()).length,
+                request.bodyPublisher().orElseThrow().contentLength());
         assertEquals(emptyList(), request.headers().allValues("Host"));
     }
 
@@ -64,7 +70,10 @@ public class AMPClientTest {
     public void canGetDataViaHttpApi() throws IOException, InterruptedException {
         var response = client.httpRequest("/api/v1/query", Map.of("query", "myLabel"));
         HttpRequest request = response.request();
-        assertEquals(URI.create("https://aps-workspaces.us-east-1.amazonaws.com/workspaces/abc123/api/v1/query?query=myLabel"), request.uri());
+        assertEquals(
+                URI.create(
+                        "https://aps-workspaces.us-east-1.amazonaws.com/workspaces/abc123/api/v1/query?query=myLabel"),
+                request.uri());
         assertEquals(emptyList(), request.headers().allValues("Host"));
     }
 

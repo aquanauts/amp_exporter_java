@@ -1,0 +1,11 @@
+name: Build
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-22.10
+    steps:
+      - uses: actions/checkout@v1
+      - name: build
+        run: make publish
