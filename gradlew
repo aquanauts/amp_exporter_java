@@ -40,6 +40,8 @@ cd "`dirname \"$PRG\"`/" >/dev/null
 APP_HOME="`pwd -P`"
 cd "$SAVED" >/dev/null
 
+# Ensure java is installed and JAVA_HOME is defined
+. "$APP_HOME"/src/dist/java.env
 APP_NAME="Gradle"
 APP_BASE_NAME=`basename "$0"`
 
