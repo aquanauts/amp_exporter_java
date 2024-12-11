@@ -32,4 +32,4 @@ reformat: ## Reformat all the code (as per pre-commit)
 	./gradlew spotlessApply
 
 publish: test
-	# ./gradlew publish
+	./gradlew publish

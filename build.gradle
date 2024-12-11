@@ -4,10 +4,11 @@ plugins {
     id 'java'
     id 'com.google.protobuf' version '0.9.4'
     id 'com.diffplug.spotless' version "6.22.0"
+    id 'maven-publish'
 }
 
 group = 'com.aquatic'
-version = '1.0.0'
+version = '0.1.0'
 description = 'Remote Write Client for Amazon Managed Prometheus'
 
 repositories {
@@ -33,6 +34,18 @@ dependencies {
     testImplementation("org.hamcrest:hamcrest:2.2")
 }
 
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = "https://maven.pkg.github.com/aquanauts/amp_exporter_java"
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+}
 
 test {
     reports.html.getRequired().set(false)
