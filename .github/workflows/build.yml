@@ -2,6 +2,9 @@ name: Build
 
 on: [push]
 
+env:
+  VERSION: ${{ github.run_number }}
+
 jobs:
   test:
     runs-on: ubuntu-22.04
