@@ -12,6 +12,8 @@ jobs:
       contents: read
       packages: write
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v4
       - name: publish
         run: make publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

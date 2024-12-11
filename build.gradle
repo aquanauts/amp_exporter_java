@@ -36,8 +36,8 @@ dependencies {
 
 publishing {
     publications {
-        maven(MavenPublication) {
-            from components.java
+        gpr(MavenPublication) {
+            from(components.java)
 
             pom {
                 name.set("amp_exporter_java") // Replace with your project name
